@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const tempMovieData = [
   {
@@ -50,26 +50,9 @@ const tempWatchedData = [
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
-const KEY = "4c015e8b";
 export default function App() {
-  const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
-
-  useEffect(function () {
-    async function MovieList() {
-      const response = await fetch(
-        `http://www.omdbapi.com/?apikey=${KEY}&s=interstellar`
-      );
-      const data = await response.json();
-      setMovies(data.Search);
-      console.log(data.Search);
-    }
-    MovieList();
-  }, []);
-
-  // fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=interstellar`)
-  //   .then((res) => res.json())
-  //   .then((data) => setMovies(data.Search));
+  const [movies, setMovies] = useState(tempMovieData);
+  const [watched, setWatched] = useState(tempWatchedData);
 
   return (
     <>
@@ -124,7 +107,6 @@ function Search() {
 }
 
 function NumResults({ movies }) {
-  if (!movies || !movies.length) return null;
   return (
     <p className="num-results">
       Found <strong>{movies.length}</strong> results
