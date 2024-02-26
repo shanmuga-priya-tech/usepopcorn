@@ -52,35 +52,46 @@ const average = (arr) =>
 
 const KEY = "4c015e8b";
 export default function App() {
+  const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  useEffect(function () {
-    async function MovieList() {
-      try {
-        setIsLoading(true);
-        const response = await fetch(
-          `http://www.omdbapi.com/?apikey=${KEY}&s=interstellar`
-        );
+  useEffect(
+    function () {
+      async function MovieList() {
+        try {
+          setIsLoading(true);
+          setError("");
 
-        if (!response.ok) {
-          throw new Error("Something Went Wrong with fetching Movies");
+          const response = await fetch(
+            `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+          );
+
+          if (!response.ok) {
+            throw new Error("Something Went Wrong with fetching Movies");
+          }
+          const data = await response.json();
+          if (data.response === "False") {
+            throw new Error("Movie not found");
+          }
+          setMovies(data.Search);
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setIsLoading(false);
         }
-        const data = await response.json();
-        if (data.response === "False") {
-          throw new Error("Movie not found");
-        }
-        setMovies(data.Search);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
       }
-    }
-    MovieList();
-  }, []);
+      if (query.length < 3) {
+        setError("");
+        setMovies([]);
+        return;
+      }
+      MovieList();
+    },
+    [query]
+  );
 
   // fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=interstellar`)
   //   .then((res) => res.json())
@@ -89,6 +100,7 @@ export default function App() {
   return (
     <>
       <NavBar>
+        <Search query={query} setQuery={setQuery} />
         <NumResults movies={movies} />
       </NavBar>
       <Main>
@@ -126,7 +138,6 @@ function NavBar({ children }) {
   return (
     <nav className="nav-bar">
       <Logo />
-      <Search />
       {children} {/*used instead of props*/}
     </nav>
   );
@@ -141,9 +152,7 @@ function Logo() {
   );
 }
 
-function Search() {
-  const [query, setQuery] = useState("");
-
+function Search({ query, setQuery }) {
   return (
     <input
       className="search"
