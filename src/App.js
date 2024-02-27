@@ -80,13 +80,16 @@ export default function App() {
 
   useEffect(
     function () {
+      const controller = new AbortController();
+
       async function MovieList() {
         try {
           setIsLoading(true);
           setError("");
 
           const response = await fetch(
-            `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+            `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`,
+            { signal: controller.signal }
           );
 
           if (!response.ok) {
@@ -97,8 +100,11 @@ export default function App() {
             throw new Error("Movie not found");
           }
           setMovies(data.Search);
+          setError("");
         } catch (err) {
-          setError(err.message);
+          if (err.name !== "AbortError") {
+            setError(err.message);
+          }
         } finally {
           setIsLoading(false);
         }
@@ -109,6 +115,10 @@ export default function App() {
         return;
       }
       MovieList();
+
+      return function () {
+        controller.abort();
+      };
     },
     [query]
   );
@@ -337,8 +347,13 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
 
   useEffect(
     function () {
-      if (!title) return;
+      if (!title) return; //it prevent displaying movie name as undefined
       document.title = `Movie | ${title}`;
+
+      //used a cleanup function to change the title back to usePopcorn when no movie is clicked
+      return function () {
+        document.title = "usePopcorn";
+      };
     },
     [title]
   );
