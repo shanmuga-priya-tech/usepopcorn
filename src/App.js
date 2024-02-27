@@ -72,6 +72,12 @@ export default function App() {
     setWatched((watchedarr) => [...watchedarr, movie]);
   }
 
+  function handleDeleteWatched(id) {
+    setWatched((watchedarr) =>
+      watchedarr.filter((movie) => movie.imdbID !== id)
+    );
+  }
+
   useEffect(
     function () {
       async function MovieList() {
@@ -139,7 +145,10 @@ export default function App() {
           ) : (
             <>
               <Summary watched={watched} />
-              <MovieWatchedList watched={watched} />
+              <MovieWatchedList
+                watched={watched}
+                onDeleteWatched={handleDeleteWatched}
+              />
             </>
           )}
         </Box>
@@ -400,11 +409,11 @@ function Summary({ watched }) {
         </p>
         <p>
           <span>⭐️</span>
-          <span>{avgImdbRating}</span>
+          <span>{avgImdbRating.toFixed(2)}</span>
         </p>
         <p>
           <span>🌟</span>
-          <span>{avgUserRating}</span>
+          <span>{avgUserRating.toFixed(2)}</span>
         </p>
         <p>
           <span>⏳</span>
@@ -415,17 +424,21 @@ function Summary({ watched }) {
   );
 }
 
-function MovieWatchedList({ watched }) {
+function MovieWatchedList({ watched, onDeleteWatched }) {
   return (
     <ul className="list">
       {watched.map((movie) => (
-        <WatchedMovies movie={movie} key={movie.imdbID} />
+        <WatchedMovies
+          movie={movie}
+          key={movie.imdbID}
+          onDeleteWatched={onDeleteWatched}
+        />
       ))}
     </ul>
   );
 }
 
-function WatchedMovies({ movie }) {
+function WatchedMovies({ movie, onDeleteWatched }) {
   return (
     <li key={movie.imdbID}>
       <img src={movie.poster} alt={`${movie.title} poster`} />
@@ -443,6 +456,12 @@ function WatchedMovies({ movie }) {
           <span>⏳</span>
           <span>{movie.runtime} min</span>
         </p>
+        <button
+          className="btn-delete"
+          onClick={() => onDeleteWatched(movie.imdbID)}
+        >
+          X
+        </button>
       </div>
     </li>
   );
