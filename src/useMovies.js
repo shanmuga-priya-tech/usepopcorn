@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 const KEY = "4c015e8b"; //imdb access key
 
-export function useMovies(query, callback) {
+export function useMovies(query) {
   const [movies, setMovies] = useState([]);
   // const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -10,7 +10,7 @@ export function useMovies(query, callback) {
 
   useEffect(
     function () {
-      callback?.();
+      //callback?.();
 
       const controller = new AbortController();
 

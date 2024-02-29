@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import StarRating from "./StarRating";
 import { useMovies } from "./useMovies";
+import { useLocalStorageState } from "./useLocalStorage";
 
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
@@ -12,13 +13,8 @@ export default function App() {
   const [selectedMovieId, setSelectedMovieId] = useState(null);
 
   //customhook
-  const { movies, isLoading, error } = useMovies(query, handleCloseMovie);
-
-  //getting data from local  storage
-  const [watched, setWatched] = useState(function () {
-    const storedData = localStorage.getItem("watched");
-    return JSON.parse(storedData);
-  });
+  const { movies, isLoading, error } = useMovies(query);
+  const [watched, setWatched] = useLocalStorageState([], "watched");
 
   function handleSelectMovie(id) {
     setSelectedMovieId((currid) => (currid === id ? null : id));
@@ -40,14 +36,6 @@ export default function App() {
       watchedarr.filter((movie) => movie.imdbID !== id)
     );
   }
-
-  //storing wtah list in local storage
-  useEffect(
-    function () {
-      localStorage.setItem("watched", JSON.stringify(watched));
-    },
-    [watched]
-  );
 
   // fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=interstellar`)
   //   .then((res) => res.json())
