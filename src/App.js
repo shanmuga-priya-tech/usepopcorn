@@ -9,10 +9,16 @@ const KEY = "4c015e8b"; //imdb access key
 export default function App() {
   const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
+  // const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedMovieId, setSelectedMovieId] = useState(null);
+
+  //getting data from local  storage
+  const [watched, setWatched] = useState(function () {
+    const storedData = localStorage.getItem("watched");
+    return JSON.parse(storedData);
+  });
 
   function handleSelectMovie(id) {
     setSelectedMovieId((currid) => (currid === id ? null : id));
