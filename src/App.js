@@ -225,7 +225,7 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
         setIsLoading(true);
 
         const response = await fetch(
-          `http://www.omdbapi.com/?apikey=${process.env.REACT_APP_IMDB_ACCESS_KEY}&i=${selectedId}`
+          `https://www.omdbapi.com/?apikey=${process.env.REACT_APP_IMDB_ACCESS_KEY}&i=${selectedId}`
         );
 
         const data = await response.json();
