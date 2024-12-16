@@ -15,10 +15,10 @@ export function useMovies(query) {
           setError("");
 
           const response = await fetch(
-            `http://www.omdbapi.com/?apikey=${process.env.REACT_APP_IMDB_ACCESS_KEY}&s=${query}`,
+            `https://www.omdbapi.com/?apikey=${process.env.REACT_APP_IMDB_ACCESS_KEY}&s=${query}`,
             { signal: controller.signal }
           );
-          console.log(response);
+
           if (!response.ok) {
             throw new Error("Something Went Wrong with fetching Movies");
           }
