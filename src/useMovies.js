@@ -1,17 +1,12 @@
 import { useState, useEffect } from "react";
 
-const KEY = "4c015e8b"; //imdb access key
-
 export function useMovies(query) {
   const [movies, setMovies] = useState([]);
-  // const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(
     function () {
-      //callback?.();
-
       const controller = new AbortController();
 
       async function MovieList() {
@@ -20,10 +15,10 @@ export function useMovies(query) {
           setError("");
 
           const response = await fetch(
-            `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`,
+            `http://www.omdbapi.com/?apikey=${process.env.REACT_APP_IMDB_ACCESS_KEY}&s=${query}`,
             { signal: controller.signal }
           );
-
+          console.log(response);
           if (!response.ok) {
             throw new Error("Something Went Wrong with fetching Movies");
           }
